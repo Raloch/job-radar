@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  min-height: 100%;
+  background: #f6f4ef;
+  color: #1c2736;
+}
+
+body {
+  font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background-image:
+    radial-gradient(circle at top left, rgba(31, 122, 110, 0.08), transparent 24rem),
+    radial-gradient(circle at right center, rgba(217, 130, 43, 0.08), transparent 24rem);
+}
+
+.font-heading {
+  font-family: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
+}
