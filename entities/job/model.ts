@@ -36,6 +36,10 @@ export function filterJobs(jobs: JobPosting[], params: JobSearchParams) {
   return jobs.filter((job) => {
     if (params.keyword && !matchesKeyword(job, params.keyword)) return false;
     if (params.city?.length && !params.city.includes(job.city)) return false;
+    if (params.source?.length) {
+      const sourceNames = job.sources.map((source) => source.sourceName);
+      if (!params.source.some((source) => sourceNames.includes(source))) return false;
+    }
     if (params.remoteMode?.length && !params.remoteMode.includes(job.remoteMode)) return false;
     if (
       params.experienceLevel?.length &&

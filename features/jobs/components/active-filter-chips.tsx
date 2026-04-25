@@ -24,6 +24,7 @@ export function ActiveFilterChips({
 
   if (params.keyword) items.push({ key: "keyword", label: params.keyword });
   params.city?.forEach((value) => items.push({ key: "city", label: value, value }));
+  params.source?.forEach((value) => items.push({ key: "source", label: value, value }));
   params.remoteMode?.forEach((value) => items.push({ key: "remoteMode", label: value, value }));
   params.experienceLevel?.forEach((value) =>
     items.push({ key: "experienceLevel", label: value, value }),

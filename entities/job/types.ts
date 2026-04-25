@@ -6,6 +6,16 @@ export const educationLevelSchema = z.enum(["none", "college", "bachelor", "mast
 export const userJobStatusSchema = z.enum(["default", "to_review", "applied", "ignored"]);
 export const sortOptionSchema = z.enum(["latest", "salary_desc", "salary_asc"]);
 export const postedWithinSchema = z.enum(["1d", "3d", "7d", "14d", "30d"]);
+export const sourceFeedTypeSchema = z.enum(["manual", "greenhouse", "lever"]);
+
+export const jobSourceSchema = z.object({
+  feedId: z.string(),
+  sourceName: z.string(),
+  sourceType: sourceFeedTypeSchema,
+  sourceUrl: z.string().url(),
+  externalId: z.string().optional(),
+  isPrimary: z.boolean(),
+});
 
 export const jobPostingSchema = z.object({
   id: z.string(),
@@ -21,6 +31,7 @@ export const jobPostingSchema = z.object({
   postedAt: z.string(),
   sourceName: z.string(),
   sourceUrl: z.string().url(),
+  sources: z.array(jobSourceSchema).default([]),
   description: z.object({
     responsibilities: z.array(z.string()),
     requirements: z.array(z.string()),
@@ -47,6 +58,7 @@ export const userJobStateSchema = z.object({
 export const jobSearchParamsSchema = z.object({
   keyword: z.string().optional(),
   city: z.array(z.string()).optional(),
+  source: z.array(z.string()).optional(),
   remoteMode: z.array(remoteModeSchema).optional(),
   experienceLevel: z.array(experienceLevelSchema).optional(),
   educationLevel: z.array(educationLevelSchema).optional(),
@@ -62,6 +74,8 @@ export type EducationLevel = z.infer<typeof educationLevelSchema>;
 export type UserJobStatus = z.infer<typeof userJobStatusSchema>;
 export type SortOption = z.infer<typeof sortOptionSchema>;
 export type PostedWithin = z.infer<typeof postedWithinSchema>;
+export type SourceFeedType = z.infer<typeof sourceFeedTypeSchema>;
+export type JobSource = z.infer<typeof jobSourceSchema>;
 export type JobPosting = z.infer<typeof jobPostingSchema>;
 export type UserJobState = z.infer<typeof userJobStateSchema>;
 export type JobSearchParams = z.infer<typeof jobSearchParamsSchema>;

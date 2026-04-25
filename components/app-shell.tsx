@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BriefcaseBusiness, LayoutGrid } from "lucide-react";
+import { BriefcaseBusiness, LayoutGrid, RefreshCcwDot } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
 
 const navItems = [
   { href: "/discover", label: "职位发现", icon: LayoutGrid },
   { href: "/my-jobs", label: "我的职位", icon: BriefcaseBusiness },
+  { href: "/admin", label: "同步管理", icon: RefreshCcwDot },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {

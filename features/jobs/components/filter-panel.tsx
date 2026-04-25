@@ -77,6 +77,7 @@ function Pill({
 type FilterPanelProps = {
   params: JobSearchParams;
   cities: string[];
+  sources: string[];
   tags: string[];
   onChange: (next: JobSearchParams) => void;
 };
@@ -87,7 +88,7 @@ function toggleArray<T extends string>(items: T[] | undefined, value: T) {
   return next.length ? next : undefined;
 }
 
-export function FilterPanel({ params, cities, tags, onChange }: FilterPanelProps) {
+export function FilterPanel({ params, cities, sources, tags, onChange }: FilterPanelProps) {
   return (
     <aside className="rounded-[30px] border border-line bg-surface p-5 shadow-panel">
       <Section title="关键词">
@@ -117,6 +118,25 @@ export function FilterPanel({ params, cities, tags, onChange }: FilterPanelProps
               }
             >
               {city}
+            </Pill>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="来源">
+        <div className="flex flex-wrap gap-2">
+          {sources.map((source) => (
+            <Pill
+              key={source}
+              active={params.source?.includes(source)}
+              onClick={() =>
+                onChange({
+                  ...params,
+                  source: toggleArray(params.source, source),
+                })
+              }
+            >
+              {source}
             </Pill>
           ))}
         </div>

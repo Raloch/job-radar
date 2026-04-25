@@ -80,6 +80,16 @@ export function JobDetailPanel({
         <ExternalLink size={14} />
       </a>
 
+      {job.sources.length > 1 ? (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {job.sources.map((source) => (
+            <Badge key={`${source.feedId}-${source.sourceUrl}`} tone="muted">
+              {source.sourceName}
+            </Badge>
+          ))}
+        </div>
+      ) : null}
+
       <section className="mt-6 border-t border-line pt-6">
         <h3 className="mb-3 font-heading text-sm font-semibold uppercase tracking-[0.16em] text-muted">
           操作区
@@ -173,6 +183,7 @@ export function JobDetailPanel({
         <p>职位 ID：{job.id}</p>
         <p className="mt-1">发布时间：{new Date(job.postedAt).toLocaleDateString("zh-CN")}</p>
         <p className="mt-1">数据来源：{job.sourceName}</p>
+        <p className="mt-1">聚合来源数：{job.sources.length}</p>
       </section>
     </aside>
   );

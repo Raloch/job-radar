@@ -82,6 +82,16 @@ function createJob(index: number): JobPosting {
     postedAt,
     sourceName,
     sourceUrl: `https://example.com/jobs/job-${index + 1}`,
+    sources: [
+      {
+        feedId: `mock-feed-${index + 1}`,
+        sourceName,
+        sourceType: "manual",
+        sourceUrl: `https://example.com/jobs/job-${index + 1}`,
+        externalId: `job-${index + 1}`,
+        isPrimary: true,
+      },
+    ],
     description: {
       responsibilities: [
         `负责 ${title} 相关产品的桌面与移动 Web 端研发，推动核心业务模块交付。`,

@@ -79,7 +79,10 @@ export function JobCard({
       </div>
 
       <div className="mt-4 flex items-center justify-between text-xs text-muted">
-        <span>{job.sourceName}</span>
+        <span>
+          {job.sourceName}
+          {job.sources.length > 1 ? ` · 聚合 ${job.sources.length} 个来源` : ""}
+        </span>
         <span>状态已同步到本地</span>
       </div>
     </button>

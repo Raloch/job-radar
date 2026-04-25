@@ -4,7 +4,7 @@ import { useDeferredValue, useEffect, useMemo, useState, startTransition } from 
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { listJobs, getFilterOptions } from "@/mocks/repository";
+import { listJobs, getFilterOptions } from "@/shared/lib/jobs-repository";
 import { type JobSearchParams } from "@/entities/job/types";
 import { parseJobSearchParams, buildJobSearchQuery } from "@/shared/lib/query-params";
 import { ActiveFilterChips } from "@/features/jobs/components/active-filter-chips";
@@ -18,8 +18,9 @@ import { useUserJobStore } from "@/stores/user-job-store";
 
 function hasActiveFilters(params: JobSearchParams) {
   return Boolean(
-    params.keyword ||
+      params.keyword ||
       params.city?.length ||
+      params.source?.length ||
       params.remoteMode?.length ||
       params.experienceLevel?.length ||
       params.educationLevel?.length ||
@@ -107,6 +108,7 @@ export function DiscoverView() {
           <FilterPanel
             params={currentParams}
             cities={filtersQuery.data?.cities ?? []}
+            sources={filtersQuery.data?.sources ?? []}
             tags={filtersQuery.data?.tags ?? []}
             onChange={updateParams}
           />

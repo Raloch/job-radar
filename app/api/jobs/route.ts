@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { listJobs } from "@/mocks/repository";
+import { listAggregatedJobs } from "@/server/jobs/service";
 import { jobSearchParamsSchema } from "@/entities/job/types";
 
 export async function GET(request: Request) {
@@ -9,6 +9,7 @@ export async function GET(request: Request) {
   const params = jobSearchParamsSchema.safeParse({
     keyword: raw.keyword,
     city: raw.city ? raw.city.split(",") : undefined,
+    source: raw.source ? raw.source.split(",") : undefined,
     remoteMode: raw.remoteMode ? raw.remoteMode.split(",") : undefined,
     experienceLevel: raw.experienceLevel ? raw.experienceLevel.split(",") : undefined,
     educationLevel: raw.educationLevel ? raw.educationLevel.split(",") : undefined,
@@ -23,6 +24,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Invalid query params" }, { status: 400 });
   }
 
-  const payload = await listJobs(params.data);
+  const payload = await listAggregatedJobs(params.data);
   return NextResponse.json(payload);
 }

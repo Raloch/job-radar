@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { countMyJobs } from "@/entities/job/model";
-import { mockJobs } from "@/mocks/jobs";
 import { useUserJobStore } from "@/stores/user-job-store";
 import { Badge } from "@/shared/ui/badge";
 import { JobCard } from "@/features/jobs/components/job-card";
@@ -11,6 +11,7 @@ import { JobDetailPanel } from "@/features/jobs/components/job-detail-panel";
 import { MobileDetailDrawer } from "@/features/jobs/components/mobile-detail-drawer";
 import { PageState } from "@/shared/ui/page-state";
 import { Button } from "@/shared/ui/button";
+import { listJobs } from "@/shared/lib/jobs-repository";
 
 const tabs = [
   { key: "saved", label: "收藏" },
@@ -24,18 +25,22 @@ export function MyJobsView() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["key"]>("saved");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const jobsQuery = useQuery({
+    queryKey: ["my-jobs-source"],
+    queryFn: () => listJobs(),
+  });
 
   const summary = useMemo(() => countMyJobs(states), [states]);
 
   const items = useMemo(() => {
-    const all = mockJobs.filter((job) => {
+    const all = (jobsQuery.data?.items ?? []).filter((job) => {
       const state = states[job.id];
       if (!state) return false;
       if (activeTab === "saved") return state.saved;
       return state.status === activeTab;
     });
     return all;
-  }, [activeTab, states]);
+  }, [activeTab, jobsQuery.data?.items, states]);
 
   useEffect(() => {
     const firstId = items[0]?.id;
@@ -86,8 +91,12 @@ export function MyJobsView() {
             </div>
 
             <div className="mt-5 space-y-4">
+              {jobsQuery.isLoading ? <PageState mode="loading" /> : null}
+              {jobsQuery.isError ? <PageState mode="error" /> : null}
               {!hasStates ? <PageState mode="first-use" /> : null}
-              {hasStates && !items.length ? <PageState mode="no-result" /> : null}
+              {hasStates && !jobsQuery.isLoading && !jobsQuery.isError && !items.length ? (
+                <PageState mode="no-result" />
+              ) : null}
               {items.map((job) => (
                 <JobCard
                   key={job.id}

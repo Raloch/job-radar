@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model SourceFeed {
+  id                  String      @id
+  name                String
+  label               String
+  type                String
+  baseUrl             String
+  isActive            Boolean
+  siteKey             String?
+  usesFixtureFallback Boolean
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  rawJobs             RawJob[]
+  jobSources          JobSource[]
+  syncRuns            SyncRunSource[]
+}
+
+model RawJob {
+  id         String     @id @default(cuid())
+  feedId     String
+  sourceType String
+  sourceName String
+  externalId String?
+  sourceUrl  String
+  payload    Json
+  fetchedAt  DateTime
+  createdAt  DateTime   @default(now())
+  feed       SourceFeed @relation(fields: [feedId], references: [id], onDelete: Cascade)
+
+  @@index([feedId])
+}
+
+model JobPosting {
+  id              String      @id
+  title           String
+  companyName     String
+  city            String
+  remoteMode      String
+  salaryMin       Int
+  salaryMax       Int
+  experienceLevel String
+  educationLevel  String
+  tags            Json
+  postedAt        DateTime
+  sourceName      String
+  sourceUrl       String
+  description     Json
+  companyProfile  Json?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  sources         JobSource[]
+}
+
+model JobSource {
+  id           String     @id @default(cuid())
+  jobPostingId String
+  feedId       String
+  sourceName   String
+  sourceType   String
+  sourceUrl    String
+  externalId   String?
+  isPrimary    Boolean
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  jobPosting   JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  feed         SourceFeed @relation(fields: [feedId], references: [id], onDelete: Cascade)
+
+  @@index([jobPostingId])
+  @@index([feedId])
+}
+
+model SyncMeta {
+  id                  String   @id
+  lastSyncedAt        DateTime?
+  totalRawJobs        Int      @default(0)
+  totalAggregatedJobs Int      @default(0)
+  totalSources        Int      @default(0)
+  updatedAt           DateTime @updatedAt
+}
+
+model SyncRun {
+  id                  String          @id
+  mode                String
+  status              String
+  startedAt           DateTime
+  finishedAt          DateTime
+  totalRawJobs        Int             @default(0)
+  totalAggregatedJobs Int             @default(0)
+  totalSources        Int             @default(0)
+  errorMessage        String?
+  createdAt           DateTime        @default(now())
+  sourceRuns          SyncRunSource[]
+
+  @@index([createdAt(sort: Desc)])
+}
+
+model SyncRunSource {
+  id                  String     @id @default(cuid())
+  syncRunId           String
+  feedId              String
+  sourceName          String
+  sourceType          String
+  status              String
+  rawJobsCount        Int        @default(0)
+  usedFixtureFallback Boolean
+  errorMessage        String?
+  createdAt           DateTime   @default(now())
+  syncRun             SyncRun    @relation(fields: [syncRunId], references: [id], onDelete: Cascade)
+  feed                SourceFeed @relation(fields: [feedId], references: [id], onDelete: Cascade)
+
+  @@index([syncRunId])
+  @@index([feedId])
+}

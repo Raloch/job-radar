@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 
-import { getJobById } from "@/mocks/repository";
+import { getAggregatedJobById } from "@/server/jobs/service";
 
 export async function GET(
   _: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const job = await getJobById(id);
+  const job = await getAggregatedJobById(id);
 
   if (!job) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
